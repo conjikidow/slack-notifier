@@ -1,7 +1,7 @@
 [project]
 name = "slack-notifier"
-version = "1.0.0"
-description = "Add your description here"
+version = "1.0.1"
+description = "A simple Python module for sending Slack notifications"
 authors = [
     { name = "Riki Nakamura", email = "riki.nakamura.edu@gmail.com" }
 ]
