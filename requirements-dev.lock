@@ -6,8 +6,10 @@
 #   features: []
 #   all-features: false
 #   with-sources: false
+#   generate-hashes: false
+#   universal: false
 
 -e file:.
-ruff==0.4.10
-slack-sdk==3.30.0
+ruff==0.6.4
+slack-sdk==3.32.0
     # via slack-notifier
