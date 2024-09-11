@@ -6,14 +6,7 @@ on:
       - main
   pull_request:
     types: [opened, synchronize, reopened]
-    paths:
-      - '.github/workflows/python_linter.yml'
-      - 'pyproject.toml'
-      - '.python-version'
-      - 'requirements.lock'
-      - 'requirements-dev.lock'
-      - 'src/**/*.py'
-      - 'tests/**/*.py'
+
 jobs:
   ruff:
     name: ruff

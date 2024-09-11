@@ -1,3 +1,5 @@
+"""Module providing a SlackNotifier class for sending notifications to Slack."""
+
 import logging
 
 from slack_sdk import WebClient
@@ -5,7 +7,18 @@ from slack_sdk.errors import SlackApiError
 
 
 class SlackNotifier:
-    def __init__(self, token, channel, username=None):
+
+    """Class for sending notifications to Slack."""
+
+    def __init__(self, token: str, channel: str, username: str | None = None) -> None:
+        """Initialize the SlackNotifier object.
+
+        Args:
+            token (str): The Slack API token.
+            channel (str): The Slack channel to send notifications to.
+            username (str, optional): The username to use for sending notifications. Defaults to None.
+
+        """
         self.__logger = logging.getLogger(__name__)
         logging.basicConfig(
             level=logging.INFO,
@@ -16,13 +29,23 @@ class SlackNotifier:
             self.__client = WebClient(token=token)
             self.__client.auth_test()
         except SlackApiError as e:
-            self.__logger.error(f"Failed to initialize Slack client: {e.response['error']}")
+            log_message = f"Failed to initialize Slack client: {e.response['error']}"
+            self.__logger.exception(log_message)
             self.__client = None
 
         self.__channel = channel
         self.__username = username
 
-    def send_message(self, message):
+    def send_message(self, message: str) -> None:
+        """Send a message to Slack.
+
+        Args:
+            message (str): The message to send.
+
+        Returns:
+            None
+
+        """
         if self.__client is None:
             self.__logger.warning("Slack client is not initialized correctly. Cannot send notification.")
             return
@@ -33,7 +56,8 @@ class SlackNotifier:
 
         try:
             self.__client.chat_postMessage(**kwargs)
-            self.__logger.info(f"Notification sent to Slack channel {self.__channel}")
+            log_message = f"Notification sent to Slack channel {self.__channel}"
+            self.__logger.info(log_message)
         except SlackApiError as e:
-            error_message = f"Failed to send notification: {e.response['error']}"
-            self.__logger.error(error_message)
+            log_message = f"Failed to send notification: {e.response['error']}"
+            self.__logger.exception(log_message)
