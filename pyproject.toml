@@ -33,4 +33,5 @@ line-length = 120
 
 [tool.ruff.lint]
 select = ["ALL"]
+ignore = ["INP001", "S105"]
 fixable = ["ALL"]

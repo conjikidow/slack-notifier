@@ -1,7 +1,10 @@
+"""Script to test the SlackNotifier class."""
+
 from slack_notifier import SlackNotifier
 
 
-def main():
+def main() -> None:
+    """Test the SlackNotifier class."""
     token = "slack-token"
     channel = "slack-channel"
     username = "slack-username"  # Optional
