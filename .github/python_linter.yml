@@ -1,0 +1,42 @@
+name: Python Linter
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - '.github/workflows/python_linter.yml'
+      - 'pyproject.toml'
+      - '.python-version'
+      - 'requirements.lock'
+      - 'requirements-dev.lock'
+      - 'src/**/*.py'
+      - 'tests/**/*.py'
+jobs:
+  ruff:
+    name: ruff
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the main repository
+        uses: actions/checkout@v4
+
+      - name: Install Rye
+        run: |
+          curl -sSf https://rye.astral.sh/get | RYE_INSTALL_OPTION="--yes" bash
+          echo "$HOME/.rye/shims" >> "$GITHUB_PATH"
+
+      - name: Set up Python environment using Rye
+        run: |
+          rye sync
+
+      - name: Check tools version
+        run: |
+          rye --version
+          rye run ruff --version
+
+      - name: Lint with Ruff
+        run: |
+          rye run ruff check . --output-format=github
