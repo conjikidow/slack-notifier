@@ -7,6 +7,7 @@ from slack_sdk.errors import SlackApiError
 
 
 class SlackNotifier:
+
     """Class for sending notifications to Slack."""
 
     def __init__(self, token: str, channel: str, username: str | None = None) -> None:
