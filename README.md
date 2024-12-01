@@ -4,12 +4,11 @@ This module provides a simple interface to send notifications to Slack using the
 
 ## Installation
 
-Install the module using [Rye](https://rye.astral.sh) is recommended.
+Install the module using [uv](https://github.com/astral-sh/uv) is recommended.
 Run the following command to add the module to your project:
 
-```bash
-rye add --git github.com/rye/slack-notifier
-rye sync
+```console
+uv add git+https://github.com/conjikidow/slack-notifier
 ```
 
 Then you can import the module in your Python code:
