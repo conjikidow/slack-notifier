@@ -1,17 +1,17 @@
-# Slack Notifier Module
+# Slack Notifier Package
 
-This module provides a simple interface to send notifications to Slack using the Slack SDK for Python.
+This package provides a simple interface to send notifications to Slack using the Slack SDK for Python.
 
 ## Installation
 
-Install the module using [uv](https://github.com/astral-sh/uv) is recommended.
-Run the following command to add the module to your project:
+Install the package using [uv](https://github.com/astral-sh/uv) is recommended.
+Run the following command to add the package to your project:
 
 ```console
 uv add git+https://github.com/conjikidow/slack-notifier
 ```
 
-Then you can import the module in your Python code:
+Then you can import the package in your Python code:
 
 ```python
 from slack_notifier import SlackNotifier
