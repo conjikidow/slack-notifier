@@ -2,6 +2,7 @@
 
 import logging
 
+from rich.logging import RichHandler
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 
@@ -20,10 +21,12 @@ class SlackNotifier:
 
         """
         self.__logger = logging.getLogger(__name__)
-        logging.basicConfig(
-            level=logging.INFO,
-            format="%(asctime)s [%(levelname)s] [SlackNotifier] %(message)s",
-        )
+        self.__logger.propagate = False
+        if not self.__logger.handlers:
+            rich_handler = RichHandler(markup=True, rich_tracebacks=True)
+            formatter = logging.Formatter("[green][SlackNotifier][/green] %(message)s", datefmt="[%X]")
+            rich_handler.setFormatter(formatter)
+            self.__logger.addHandler(rich_handler)
 
         try:
             self.__client = WebClient(token=token)

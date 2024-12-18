@@ -28,9 +28,12 @@ from slack_notifier import SlackNotifier
 Here is an example of how to use the `SlackNotifier` class to send a message to Slack:
 
 ```python
+import logging
+
 from slack_notifier import SlackNotifier
 
-def main():
+def main() -> None:
+    """Test the SlackNotifier class."""
     token = "slack-token"
     channel = "slack-channel"
     username = "slack-username"  # Optional
@@ -41,6 +44,8 @@ def main():
     notifier.send_message(message)
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+
     main()
 ```
 
