@@ -256,7 +256,7 @@ wheels = [
 
 [[package]]
 name = "slack-notifier"
-version = "1.0.3"
+version = "1.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "slack-sdk" },
