@@ -15,6 +15,7 @@ on:
       - '.github/labels/label_definition.yaml'
 
 jobs:
+
   labeler:
     name: labeler
     runs-on: ubuntu-latest

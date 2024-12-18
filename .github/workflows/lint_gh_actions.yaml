@@ -12,6 +12,7 @@ on:
       - '.github/workflows/**'
 
 jobs:
+
   actionlint:
     name: actionlint
     runs-on: ubuntu-latest
