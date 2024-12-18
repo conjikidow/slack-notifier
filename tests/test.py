@@ -1,5 +1,7 @@
 """Script to test the SlackNotifier class."""
 
+import logging
+
 from slack_notifier import SlackNotifier
 
 
@@ -16,4 +18,6 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+
     main()
