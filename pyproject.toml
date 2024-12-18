@@ -6,6 +6,7 @@ authors = [
     { name = "Riki Nakamura", email = "riki.nakamura.edu@gmail.com" }
 ]
 dependencies = [
+    "rich>=13.9.4",
     "slack-sdk>=3.32.0",
 ]
 readme = "README.md"
