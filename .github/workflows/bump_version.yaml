@@ -1,0 +1,101 @@
+name: Bump Version
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+
+  version-bump:
+    name: Bump version
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get labels
+        id: labels
+        run: |
+          labels=$(gh api --jq '.labels.[].name' "/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}" | tr '\n' ',' | sed 's/,$//')
+          echo "labels=$labels" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Determine bump type
+        id: bump-type
+        run: |
+           labels="${{ steps.labels.outputs.labels }}"
+           if [[ "$labels" == "update::major" ]]; then
+               echo "type=major" >> "$GITHUB_OUTPUT"
+           elif [[ "$labels" == "update::minor" ]]; then
+               echo "type=minor" >> "$GITHUB_OUTPUT"
+           elif [[ "$labels" == "update::patch" ]]; then
+               echo "type=patch" >> "$GITHUB_OUTPUT"
+           else
+               echo "No matching label found. Skipping version bump."
+               echo "type=none" >> "$GITHUB_OUTPUT"
+           fi
+
+      - name: Install uv
+        if: steps.bump-type.outputs.type != 'none'
+        uses: astral-sh/setup-uv@v4
+
+      - name: Set up Python environment using uv
+        if: steps.bump-type.outputs.type != 'none'
+        run: |
+          uv sync
+
+      - name: Check tools version
+        if: steps.bump-type.outputs.type != 'none'
+        run: |
+          uv --version
+          uv run bump-my-version --version
+
+      - name: Configure Git for CI
+        if: steps.bump-type.outputs.type != 'none'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump version
+        if: steps.bump-type.outputs.type != 'none'
+        id: bump
+        run: |
+          previous_version="$(uv run bump-my-version show-bump | head -1 | awk '{print $1}')"
+          echo "previous-version=${previous_version}" >> "$GITHUB_OUTPUT"
+
+          uv run bump-my-version bump "${{ steps.bump-type.outputs.type }}"
+
+          current_version="$(uv run bump-my-version show-bump | head -1 | awk '{print $1}')"
+          echo "current-version=${current_version}" >> "$GITHUB_OUTPUT"
+
+          if [ "$previous_version" != "$current_version" ]; then
+              echo "bumped=true" >> "$GITHUB_OUTPUT"
+              echo "Bumped version from $previous_version to $current_version"
+          else
+              echo "bumped=false" >> "$GITHUB_OUTPUT"
+              echo "No version bump required"
+          fi
+
+      - name: Set new branch name
+        if: steps.bump.outputs.bumped == 'true'
+        id: new-branch
+        run: |
+          new_branch="workflow/bump-version-from-${{ steps.bump.outputs.previous-version }}-to-${{ steps.bump.outputs.current-version }}"
+          echo "name=${new_branch}" >> "$GITHUB_OUTPUT"
+
+      - name: Create Pull Request
+        if: steps.bump.outputs.bumped == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: ${{ steps.new-branch.outputs.name }}
+          commit-message: "Bump version from ${{ steps.bump.outputs.previous-version }} to ${{ steps.bump.outputs.current-version }}"
+          title: "Bump version from ${{ steps.bump.outputs.previous-version }} to ${{ steps.bump.outputs.current-version }}"
+          body: >
+            This PR updates the version from `${{ steps.bump.outputs.previous-version }}` to `${{ steps.bump.outputs.current-version }}`.
+
+            Bump Type: `${{ steps.bump-type.outputs.type }}`
+          labels: automated

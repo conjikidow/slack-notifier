@@ -1,0 +1,32 @@
+name: Generate Labels
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - '.github/workflows/generate_labels.yaml'
+      - '.github/labels/label_definition.yaml'
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+    paths:
+      - '.github/workflows/generate_labels.yaml'
+      - '.github/labels/label_definition.yaml'
+
+jobs:
+
+  labeler:
+    name: labeler
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Labeler
+        uses: crazy-max/ghaction-github-labeler@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          yaml-file: .github/labels/label_definition.yaml
+          skip-delete: false
+          dry-run: false

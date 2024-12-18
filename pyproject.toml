@@ -1,6 +1,6 @@
 [project]
 name = "slack-notifier"
-version = "1.0.2"
+version = "1.0.3"
 description = "A simple Python package for sending Slack notifications"
 authors = [
     { name = "Riki Nakamura", email = "riki.nakamura.edu@gmail.com" }
@@ -18,6 +18,7 @@ build-backend = "hatchling.build"
 [tool.uv]
 managed = true
 dev-dependencies = [
+    "bump-my-version>=0.28.3",
     "ruff>=0.6.4",
 ]
 

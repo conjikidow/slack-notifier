@@ -1,0 +1,7 @@
+"tools":
+  - changed-files:
+    - any-glob-to-any-file: [".github/**", "pyproject.toml", ".python-version", "uv.lock"]
+
+"documentation":
+  - changed-files:
+    - any-glob-to-any-file: "**/*.md"
