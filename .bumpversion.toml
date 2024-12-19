@@ -23,3 +23,9 @@ post_commit_hooks = []
 filename = "pyproject.toml"
 search = 'version = "{current_version}"'
 replace = 'version = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "uv.lock"
+search = 'name = "slack-notifier"\nversion = "{current_version}"'
+replace = 'name = "slack-notifier"\nversion = "{new_version}"'
+regex = true
