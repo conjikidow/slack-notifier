@@ -92,7 +92,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           branch: ${{ steps.new-branch.outputs.name }}
-          commit-message: "Bump version from ${{ steps.bump.outputs.previous-version }} to ${{ steps.bump.outputs.current-version }}"
+          commit-message: "Bump version: ${{ steps.bump.outputs.previous-version }} -> ${{ steps.bump.outputs.current-version }}"
           title: "Bump version from ${{ steps.bump.outputs.previous-version }} to ${{ steps.bump.outputs.current-version }}"
           body: >
             This PR updates the version from `${{ steps.bump.outputs.previous-version }}` to `${{ steps.bump.outputs.current-version }}`.
