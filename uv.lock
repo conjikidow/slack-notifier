@@ -277,8 +277,8 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "bump-my-version", specifier = ">=0.28.3" },
-    { name = "ruff", specifier = ">=0.6.4" },
+    { name = "bump-my-version", specifier = "==0.28.3" },
+    { name = "ruff", specifier = "==0.8.1" },
 ]
 
 [[package]]
