@@ -2,5 +2,19 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "labels": [
+    "automated"
+  ],
+  "packageRules": [
+    {
+      "matchManagers": [
+        "pep621"
+      ],
+      "matchDepTypes": [
+        "tool.uv.dev-dependencies"
+      ],
+      "automerge": false
+    }
   ]
 }
