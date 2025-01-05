@@ -89,7 +89,7 @@ jobs:
 
       - name: Create Pull Request
         if: steps.bump.outputs.bumped == 'true'
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v7.0.6
         with:
           branch: ${{ steps.new-branch.outputs.name }}
           commit-message: "Bump version: ${{ steps.bump.outputs.previous-version }} -> ${{ steps.bump.outputs.current-version }}"
