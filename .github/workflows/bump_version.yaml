@@ -41,7 +41,7 @@ jobs:
 
       - name: Install uv
         if: steps.bump-type.outputs.type != 'none'
-        uses: astral-sh/setup-uv@v5.2.0
+        uses: astral-sh/setup-uv@v5.2.1
 
       - name: Set up Python environment using uv
         if: steps.bump-type.outputs.type != 'none'
