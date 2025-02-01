@@ -19,7 +19,7 @@ build-backend = "hatchling.build"
 [tool.uv]
 managed = true
 dev-dependencies = [
-    "bump-my-version==0.30.1",
+    "bump-my-version==0.31.0",
     "ruff==0.9.4",
 ]
 
