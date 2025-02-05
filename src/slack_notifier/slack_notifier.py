@@ -1,7 +1,9 @@
 """Module providing a SlackNotifier class for sending notifications to Slack."""
 
 import logging
+import os
 
+from dotenv import load_dotenv
 from rich.logging import RichHandler
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
@@ -11,13 +13,13 @@ class SlackNotifier:
 
     """Class for sending notifications to Slack."""
 
-    def __init__(self, token: str, channel: str, username: str | None = None) -> None:
+    def __init__(self, channel: str, username: str | None = None, token_env_var: str = "SLACK_TOKEN") -> None:  # noqa: S107
         """Initialize the SlackNotifier object.
 
         Args:
-            token (str): The Slack API token.
-            channel (str): The Slack channel to send notifications to.
+            channel (str): The Slack channel name or ID to send notifications to.
             username (str, optional): The username to use for sending notifications. Defaults to None.
+            token_env_var (str, optional): The environment variable name for the Slack API token. Defaults to "SLACK_TOKEN".
 
         """
         self.__logger = logging.getLogger(__name__)
@@ -27,6 +29,20 @@ class SlackNotifier:
             formatter = logging.Formatter("[green][SlackNotifier][/green] %(message)s", datefmt="[%X]")
             rich_handler.setFormatter(formatter)
             self.__logger.addHandler(rich_handler)
+
+        # Try to get the token from the environment variable
+        token = os.getenv(token_env_var)
+
+        # If the token is not found in the environment variable, try loading from .env file
+        if not token:
+            load_dotenv()  # Load .env file
+            token = os.getenv(token_env_var)
+
+        # If the token is still not found, raise an exception
+        if not token:
+            error_message = f"{token_env_var} is not set in environment variables or .env file."
+            self.__logger.error(error_message)
+            raise ValueError(error_message)
 
         try:
             self.__client = WebClient(token=token)

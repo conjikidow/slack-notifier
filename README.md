@@ -34,11 +34,12 @@ from slack_notifier import SlackNotifier
 
 def main() -> None:
     """Test the SlackNotifier class."""
-    token = "slack-token"
-    channel = "slack-channel"
+    channel = "#slack-channel"  # Either the channel name (with #) or ID
     username = "slack-username"  # Optional
+    token_env_var = "SLACK_API_TOKEN"  # Optional, defaults to "SLACK_TOKEN"
 
-    notifier = SlackNotifier(token, channel, username)
+    # Initialize SlackNotifier with the channel, username, and optional token environment variable name
+    notifier = SlackNotifier(channel, username, token_env_var=token_env_var)
 
     message = "Hello from your Slack notifier!"
     notifier.send_message(message)
@@ -51,6 +52,11 @@ if __name__ == "__main__":
 
 ### Explanation
 
-- Replace `"slack-token"`, `"slack-channel"`, and `"slack-username"` with your actual Slack API token, channel, and username (if applicable).
-- The `SlackNotifier` class initializes a Slack client with the provided token and sends a message to the specified channel using the `send_message` method.
+- Replace `"#slack-channel"` and `"slack-username"` with your actual Slack channel (name or ID) and username (if applicable).
+- The `SlackNotifier` class will automatically try to load the Slack API token from the environment variable:
+  - By default, it looks for the `SLACK_TOKEN` environment variable.
+  - You can specify a different environment variable name using the `token_env_var` parameter.
+  - If the token is not found in the environment variable, the class will attempt to load it from the `.env` file (if present).
+  - If no token is found in either the environment variable or `.env` file, an error will be raised.
+- The `SlackNotifier` class initializes a Slack client with the loaded token and sends a message to the specified channel using the `send_message` method.
 - If the username is provided, it will be used as the sender of the message; otherwise, the default sender will be used.
