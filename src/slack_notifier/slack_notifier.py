@@ -50,25 +50,21 @@ class SlackNotifier:
         except SlackApiError as e:
             log_message = f"Failed to initialize Slack client: {e.response['error']}"
             self.__logger.exception(log_message)
-            self.__client = None
+            raise
 
         self.__channel = channel
         self.__username = username
 
-    def send_message(self, message: str) -> None:
+    def send_message(self, message: str) -> bool:
         """Send a message to Slack.
 
         Args:
             message (str): The message to send.
 
         Returns:
-            None
+            bool: True if the message was sent successfully, False otherwise.
 
         """
-        if self.__client is None:
-            self.__logger.warning("Slack client is not initialized correctly. Cannot send notification.")
-            return
-
         kwargs = {"channel": self.__channel, "text": message}
         if self.__username:
             kwargs["username"] = self.__username
@@ -80,3 +76,6 @@ class SlackNotifier:
         except SlackApiError as e:
             log_message = f"Failed to send notification: {e.response['error']}"
             self.__logger.exception(log_message)
+            return False
+
+        return True
