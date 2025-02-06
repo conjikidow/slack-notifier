@@ -61,3 +61,30 @@ if __name__ == "__main__":
   - If no token is found in either the environment variable or `.env` file, an error will be raised.
 - The `SlackNotifier` class initializes a Slack client with the loaded token and sends a message to the specified channel using the `send_message` method.
 - If the username is provided, it will be used as the sender of the message; otherwise, the default sender will be used.
+
+### Obtaining Your Slack API Token
+
+To use the Slack API, you need to create a Slack App and generate a bot token. Follow these steps:
+
+1. **Create a Slack App**:
+   - Go to [Slack API: Your Apps](https://api.slack.com/apps).
+   - Click on the **Create New App** button.
+   - Select either **From scratch** or **Using an app manifest** to create your app. Provide the necessary details, such as the name of your app and the workspace where you want it installed.
+
+2. **Set Up Permissions**:
+   - Once your app is created, navigate to the **OAuth & Permissions** section under the **Features** tab.
+   - Here, you will define the **Bot Token Scopes** that your app needs. For sending messages, you need at least the following permissions:
+     - `chat:write` - Send messages to channels.
+     - `chat:write.customize` - Send messages with a custom username and avatar (if needed).
+
+     ![Image](https://github.com/user-attachments/assets/16835716-cee1-47ad-8db4-654ad10d574b)
+
+3. **Install the App**:
+   - Go to the **Install App** section in the left sidebar of your app's settings.
+   - Click **Install to Workspace** to install the app to your Slack workspace.
+   - You’ll be prompted to authorize the app. Once authorized, you’ll be given an **OAuth Access Token** (starts with `xoxb-`), which is the token you will use for API requests.
+
+4. **Set the Token as an Environment Variable**:
+   - You can set the obtained OAuth token as an environment variable called `SLACK_TOKEN`. Alternatively, you can specify a different environment variable name by passing it to the `SlackNotifier` class.
+
+For more details, visit the [Slack API Authentication Documentation](https://api.slack.com/authentication).
