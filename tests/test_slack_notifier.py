@@ -5,9 +5,8 @@ from slack_sdk.errors import SlackApiError
 
 from slack_notifier import SlackNotifier
 
-# Ensure a valid Slack API token is available
-SLACK_TOKEN = os.getenv("SLACK_TOKEN")
-SLACK_CHANNEL = "C08BUGZ66VB"  # Specify your Slack channel ID
+SLACK_TOKEN = os.getenv("SLACK_TOKEN")  # Ensure a valid Slack API token is available
+SLACK_CHANNEL = "C08BUGZ66VB"
 
 
 @pytest.mark.skipif(SLACK_TOKEN is None, reason="SLACK_TOKEN is not set")
