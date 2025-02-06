@@ -50,7 +50,7 @@ class SlackNotifier:
         except SlackApiError as e:
             log_message = f"Failed to initialize Slack client: {e.response['error']}"
             self.__logger.exception(log_message)
-            self.__client = None
+            raise
 
         self.__channel = channel
         self.__username = username
