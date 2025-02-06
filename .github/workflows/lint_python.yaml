@@ -10,8 +10,7 @@ on:
       - '.github/workflows/lint_python.yaml'
       - 'pyproject.toml'
       - '.python-version'
-      - 'src/**.py'
-      - 'tests/**.py'
+      - '**/**.py'
       - 'uv.lock'
 
 jobs:
