@@ -44,3 +44,4 @@ fixable = ["ALL"]
 
 [tool.ruff.lint.per-file-ignores]
 "examples/*" = ["INP001", "S105"]
+"tests/*" = ["D", "INP001"]
