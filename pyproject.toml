@@ -42,4 +42,4 @@ ignore = ["D211", "D213"]
 fixable = ["ALL"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["INP001", "S105"]
+"examples/*" = ["INP001", "S105"]
