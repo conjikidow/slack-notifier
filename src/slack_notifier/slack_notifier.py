@@ -10,7 +10,6 @@ from slack_sdk.errors import SlackApiError
 
 
 class SlackNotifier:
-
     """Class for sending notifications to Slack."""
 
     def __init__(self, channel: str, username: str | None = None, token_env_var: str = "SLACK_TOKEN") -> None:  # noqa: S107
@@ -65,10 +64,6 @@ class SlackNotifier:
             bool: True if the message was sent successfully, False otherwise.
 
         """
-        if self.__client is None:
-            self.__logger.warning("Slack client is not initialized correctly. Cannot send notification.")
-            return False
-
         kwargs = {"channel": self.__channel, "text": message}
         if self.__username:
             kwargs["username"] = self.__username
