@@ -30,8 +30,10 @@ Here is an example of how to use the `SlackNotifier` class to send a message to 
 
 ```python
 import logging
+from pathlib import Path
 
 from slack_notifier import SlackNotifier
+
 
 def main() -> None:
     channel = "#slack-channel"  # Specify the Slack channel name (with #) or ID
@@ -43,6 +45,13 @@ def main() -> None:
 
     message = "Hello from your Slack notifier!"  # The message to send
     notifier.send_message(message)  # Send the message to Slack
+
+    attachments = [
+        Path("tests/data/test_file.txt"),
+        Path("tests/data/test_file.png"),
+    ]
+    message = "Hello from your Slack notifier with file attachments!"
+    notifier.send_message(message, attachments=attachments)  # Send the message with file attachments
 
 
 if __name__ == "__main__":
@@ -61,6 +70,7 @@ if __name__ == "__main__":
   - If no token is found in either the environment variable or `.env` file, an error will be raised.
 - The `SlackNotifier` class initializes a Slack client with the loaded token and sends a message to the specified channel using the `send_message` method.
 - If the username is provided, it will be used as the sender of the message; otherwise, the default sender will be used.
+- If file paths are provided in the `attachments` parameter, the files will be uploaded as attachments to the message.
 
 ### Obtaining Your Slack API Token
 

@@ -2,6 +2,7 @@
 
 import logging
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 from rich.logging import RichHandler
@@ -55,19 +56,35 @@ class SlackNotifier:
         self.__channel = channel
         self.__username = username
 
-    def send_message(self, message: str) -> bool:
-        """Send a message to Slack.
+    def send_message(self, message: str, attachments: list[Path] | None = None) -> bool:
+        """Send a message to Slack, optionally with files.
 
         Args:
             message (str): The message to send.
+            attachments (list[Path], optional): List of file paths to attach. Defaults to None.
 
         Returns:
             bool: True if the message was sent successfully, False otherwise.
 
         """
-        kwargs = {"channel": self.__channel, "text": message}
+        kwargs = {"channel": self.__channel}
         if self.__username:
             kwargs["username"] = self.__username
+
+        if attachments:
+            for file_path in attachments:
+                if file_path.exists():
+                    # Upload file to Slack
+                    response = self.__client.files_upload_v2(
+                        title=f"{file_path.name}",
+                        file=str(file_path),
+                    )
+                    message += f"<{response['file']['permalink']}| >"
+                else:
+                    log_message = f"File {file_path} not found. Skipping this file."
+                    self.__logger.warning(log_message)
+
+        kwargs["text"] = message
 
         try:
             self.__client.chat_postMessage(**kwargs)
