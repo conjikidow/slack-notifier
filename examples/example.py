@@ -1,6 +1,7 @@
 """Example script to demonstrate the usage of the SlackNotifier class."""
 
 import logging
+from pathlib import Path
 
 from slack_notifier import SlackNotifier
 
@@ -16,6 +17,13 @@ def main() -> None:
 
     message = "Hello from your Slack notifier!"  # The message to send
     notifier.send_message(message)  # Send the message to Slack
+
+    attachments = [
+        Path("tests/data/test_file.txt"),
+        Path("tests/data/test_file.png"),
+    ]
+    message = "Hello from your Slack notifier with file attachments!"  # The message to send
+    notifier.send_message(message, file_paths=attachments)  # Send the message with file attachments to Slack
 
 
 if __name__ == "__main__":
