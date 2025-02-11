@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 import pytest
 from slack_sdk.errors import SlackApiError
@@ -31,6 +32,24 @@ def test_send_message_with_custom_username() -> None:
 
     message = "Test message from SlackNotifier! (custom username)"
     success = notifier.send_message(message)
+
+    if not success:
+        pytest.fail("Message sending failed.")
+
+
+@pytest.mark.skipif(SLACK_TOKEN is None, reason="SLACK_TOKEN is not set")
+def test_send_message_with_file_attachments() -> None:
+    """Test sending a message to Slack with file attachments."""
+    # Initialize SlackNotifier
+    notifier = SlackNotifier(channel=SLACK_CHANNEL)
+
+    message = "Test message from SlackNotifier! (with file attachments)"
+    file_paths = [
+        Path("tests/data/test_file.txt"),
+        Path("tests/data/test_file.png"),
+        Path("tests/data/non_existent_file.txt"),  # Non-existent file (should be skipped)
+    ]
+    success = notifier.send_message(message, file_paths=file_paths)
 
     if not success:
         pytest.fail("Message sending failed.")
