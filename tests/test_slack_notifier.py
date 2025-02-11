@@ -44,12 +44,12 @@ def test_send_message_with_file_attachments() -> None:
     notifier = SlackNotifier(channel=SLACK_CHANNEL)
 
     message = "Test message from SlackNotifier! (with file attachments)"
-    file_paths = [
+    attachments = [
         Path("tests/data/test_file.txt"),
         Path("tests/data/test_file.png"),
         Path("tests/data/non_existent_file.txt"),  # Non-existent file (should be skipped)
     ]
-    success = notifier.send_message(message, file_paths=file_paths)
+    success = notifier.send_message(message, attachments=attachments)
 
     if not success:
         pytest.fail("Message sending failed.")

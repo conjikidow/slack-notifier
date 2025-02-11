@@ -23,7 +23,7 @@ def main() -> None:
         Path("tests/data/test_file.png"),
     ]
     message = "Hello from your Slack notifier with file attachments!"  # The message to send
-    notifier.send_message(message, file_paths=attachments)  # Send the message with file attachments to Slack
+    notifier.send_message(message, attachments=attachments)  # Send the message with file attachments to Slack
 
 
 if __name__ == "__main__":

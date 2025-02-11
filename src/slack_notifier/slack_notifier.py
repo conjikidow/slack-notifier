@@ -56,12 +56,12 @@ class SlackNotifier:
         self.__channel = channel
         self.__username = username
 
-    def send_message(self, message: str, file_paths: list[Path] | None = None) -> bool:
+    def send_message(self, message: str, attachments: list[Path] | None = None) -> bool:
         """Send a message to Slack, optionally with files.
 
         Args:
             message (str): The message to send.
-            file_paths (list[Path], optional): List of file paths to attach. Defaults to None.
+            attachments (list[Path], optional): List of file paths to attach. Defaults to None.
 
         Returns:
             bool: True if the message was sent successfully, False otherwise.
@@ -71,8 +71,8 @@ class SlackNotifier:
         if self.__username:
             kwargs["username"] = self.__username
 
-        if file_paths:
-            for file_path in file_paths:
+        if attachments:
+            for file_path in attachments:
                 if file_path.exists():
                     # Upload file to Slack
                     response = self.__client.files_upload_v2(
