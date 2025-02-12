@@ -7,13 +7,13 @@ on:
 
 jobs:
 
-  version-bump:
+  bump-version:
     name: Bump version
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout the main repository
         uses: actions/checkout@v4.2.2
 
       - name: Get labels
@@ -43,10 +43,10 @@ jobs:
         if: steps.bump-type.outputs.type != 'none'
         uses: astral-sh/setup-uv@v5.2.2
 
-      - name: Set up Python environment using uv
+      - name: Set up bump-my-version using uv
         if: steps.bump-type.outputs.type != 'none'
         run: |
-          uv sync
+          uv sync --only-group versioning
 
       - name: Check tools version
         if: steps.bump-type.outputs.type != 'none'
@@ -98,4 +98,61 @@ jobs:
             This PR updates the version from `${{ steps.bump.outputs.previous-version }}` to `${{ steps.bump.outputs.current-version }}`.
 
             Bump Type: `${{ steps.bump-type.outputs.type }}`
-          labels: automated
+          labels: |
+            automated
+            versioning
+
+  create-tag:
+    name: Create tag
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout the main repository
+        uses: actions/checkout@v4.2.2
+
+      - name: Verify branch name
+        id: verify_branch
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          branch_name=$HEAD_REF
+
+          # Ensure branch_name is not empty
+          if [ -z "$branch_name" ]; then
+            echo "branch_name is not set. Exiting."
+            exit 1
+          fi
+
+          # Verify if branch_name matches the expected pattern
+          branch_name=$(echo "$branch_name" | grep -E '^workflow/bump-version-from-[0-9]+\.[0-9]+\.[0-9]+-to-[0-9]+\.[0-9]+\.[0-9]+$' || echo "nomatch")
+          if [ "$branch_name" == "nomatch" ]; then
+            echo "This branch does not match the expected pattern. Skipping."
+            exit 0
+          fi
+
+          echo "branch_name=${branch_name}" >> "$GITHUB_OUTPUT"
+
+      - name: Extract version from branch name
+        id: extract_version
+        if: steps.verify_branch.outputs.branch_name
+        run: |
+          # Extract the version from the branch name
+          current_version=$(echo "${{ steps.verify_branch.outputs.branch_name }}" | sed -E 's/^workflow\/bump-version-from-[0-9]+\.[0-9]+\.[0-9]+-to-([0-9]+\.[0-9]+\.[0-9]+)$/\1/')
+          echo "current_version=${current_version}" >> "$GITHUB_OUTPUT"
+
+      - name: Configure Git
+        if: steps.verify_branch.outputs.branch_name
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create and push Git tag
+        if: steps.verify_branch.outputs.branch_name
+        run: |
+          git tag "v${{ steps.extract_version.outputs.current_version }}" "${{ github.event.pull_request.merge_commit_sha }}"
+          git push origin "v${{ steps.extract_version.outputs.current_version }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
