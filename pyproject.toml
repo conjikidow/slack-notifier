@@ -19,11 +19,13 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
-    "bump-my-version==0.32.1",
-    "pytest-cov==6.0.0",
-    "pytest==8.3.4",
-    "ruff==0.9.6",
+    { include-group = "lint" },
+    { include-group = "test" },
+    { include-group = "versioning" },
 ]
+lint = [ "ruff==0.9.6" ]
+test = [ "pytest==8.3.4", "pytest-cov==6.0.0" ]
+versioning = [ "bump-my-version==0.32.1" ]
 
 [tool.uv]
 managed = true
