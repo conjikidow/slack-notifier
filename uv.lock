@@ -453,7 +453,7 @@ dev = [
 lint = [
     { name = "ruff" },
 ]
-test = [
+testing = [
     { name = "pytest" },
     { name = "pytest-cov" },
 ]
@@ -476,7 +476,7 @@ dev = [
     { name = "ruff", specifier = "==0.9.6" },
 ]
 lint = [{ name = "ruff", specifier = "==0.9.6" }]
-test = [
+testing = [
     { name = "pytest", specifier = "==8.3.4" },
     { name = "pytest-cov", specifier = "==6.0.0" },
 ]
