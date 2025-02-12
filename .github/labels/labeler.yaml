@@ -1,7 +1,15 @@
 "tools":
   - changed-files:
-    - any-glob-to-any-file: [".github/**", "pyproject.toml", ".python-version", "uv.lock"]
+    - any-glob-to-any-file: ".github/**"
 
 "documentation":
   - changed-files:
     - any-glob-to-any-file: "**/*.md"
+
+"dependencies":
+  - changed-files:
+    - any-glob-to-any-file: "uv.lock"
+
+"versioning":
+  - changed-files:
+    - any-glob-to-any-file: ".bumpversion.toml"
