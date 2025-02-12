@@ -1,6 +1,6 @@
 [project]
 name = "slack-notifier"
-version = "1.4.0"
+version = "1.4.1"
 description = "A simple Python package for sending Slack notifications"
 readme = "README.md"
 authors = [
