@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![Run Pytest](https://github.com/conjikidow/slack-notifier/actions/workflows/run_pytest.yaml/badge.svg)](https://github.com/conjikidow/slack-notifier/actions/workflows/run_pytest.yaml)
+[![CI](https://github.com/conjikidow/slack-notifier/actions/workflows/ci.yaml/badge.svg)](https://github.com/conjikidow/slack-notifier/actions/workflows/ci.yaml)
 
 This package provides a simple interface to send notifications to Slack using the Slack SDK for Python.
 
