@@ -21,11 +21,9 @@ build-backend = "hatchling.build"
 dev = [
     { include-group = "lint" },
     { include-group = "testing" },
-    { include-group = "versioning" },
 ]
 lint = [ "ruff==0.9.6" ]
 testing = [ "pytest==8.3.4", "pytest-cov==6.0.0" ]
-versioning = [ "bump-my-version==0.32.1" ]
 
 [tool.uv]
 managed = true

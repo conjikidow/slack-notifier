@@ -1,4 +1,4 @@
-name: Bump Version
+name: "Bump Version"
 
 on:
   pull_request:
@@ -6,153 +6,14 @@ on:
       - closed
 
 jobs:
-
   bump-version:
-    name: Bump version
-    if: github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout the main repository
-        uses: actions/checkout@v4.2.2
-
-      - name: Get labels
-        id: labels
-        run: |
-          labels=$(gh api --jq '.labels.[].name' "/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}" | tr '\n' ',' | sed 's/,$//')
-          echo "labels=$labels" >> "$GITHUB_OUTPUT"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Determine bump type
-        id: bump-type
-        run: |
-           labels="${{ steps.labels.outputs.labels }}"
-           if [[ "$labels" == *"update::major"* ]]; then
-               echo "type=major" >> "$GITHUB_OUTPUT"
-           elif [[ "$labels" == *"update::minor"* ]]; then
-               echo "type=minor" >> "$GITHUB_OUTPUT"
-           elif [[ "$labels" == *"update::patch"* ]]; then
-               echo "type=patch" >> "$GITHUB_OUTPUT"
-           else
-               echo "No matching label found. Skipping version bump."
-               echo "type=none" >> "$GITHUB_OUTPUT"
-           fi
-
-      - name: Install uv
-        if: steps.bump-type.outputs.type != 'none'
-        uses: astral-sh/setup-uv@v5.2.2
-
-      - name: Set up bump-my-version using uv
-        if: steps.bump-type.outputs.type != 'none'
-        run: |
-          uv sync --only-group versioning
-
-      - name: Check tools version
-        if: steps.bump-type.outputs.type != 'none'
-        run: |
-          uv --version
-          uv run bump-my-version --version
-
-      - name: Configure Git for CI
-        if: steps.bump-type.outputs.type != 'none'
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Bump version
-        if: steps.bump-type.outputs.type != 'none'
-        id: bump
-        run: |
-          previous_version="$(uv run bump-my-version show-bump | head -1 | awk '{print $1}')"
-          echo "previous-version=${previous_version}" >> "$GITHUB_OUTPUT"
-
-          uv run bump-my-version bump "${{ steps.bump-type.outputs.type }}"
-
-          current_version="$(uv run bump-my-version show-bump | head -1 | awk '{print $1}')"
-          echo "current-version=${current_version}" >> "$GITHUB_OUTPUT"
-
-          if [ "$previous_version" != "$current_version" ]; then
-              echo "bumped=true" >> "$GITHUB_OUTPUT"
-              echo "Bumped version from $previous_version to $current_version"
-          else
-              echo "bumped=false" >> "$GITHUB_OUTPUT"
-              echo "No version bump required"
-          fi
-
-      - name: Set new branch name
-        if: steps.bump.outputs.bumped == 'true'
-        id: new-branch
-        run: |
-          new_branch="workflow/bump-version-from-${{ steps.bump.outputs.previous-version }}-to-${{ steps.bump.outputs.current-version }}"
-          echo "name=${new_branch}" >> "$GITHUB_OUTPUT"
-
-      - name: Create Pull Request
-        if: steps.bump.outputs.bumped == 'true'
-        uses: peter-evans/create-pull-request@v7.0.6
-        with:
-          branch: ${{ steps.new-branch.outputs.name }}
-          commit-message: "Bump version: ${{ steps.bump.outputs.previous-version }} -> ${{ steps.bump.outputs.current-version }}"
-          title: "Bump version from ${{ steps.bump.outputs.previous-version }} to ${{ steps.bump.outputs.current-version }}"
-          body: >
-            This PR updates the version from `${{ steps.bump.outputs.previous-version }}` to `${{ steps.bump.outputs.current-version }}`.
-
-            Bump Type: `${{ steps.bump-type.outputs.type }}`
-          labels: |
-            automated
-            versioning
-
-  create-tag:
-    name: Create tag
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
+      pull-requests: write
     steps:
-      - name: Checkout the main repository
-        uses: actions/checkout@v4.2.2
-
-      - name: Verify branch name
-        id: verify_branch
-        env:
-          HEAD_REF: ${{ github.event.pull_request.head.ref }}
-        run: |
-          branch_name=$HEAD_REF
-
-          # Ensure branch_name is not empty
-          if [ -z "$branch_name" ]; then
-            echo "branch_name is not set. Exiting."
-            exit 1
-          fi
-
-          # Verify if branch_name matches the expected pattern
-          branch_name=$(echo "$branch_name" | grep -E '^workflow/bump-version-from-[0-9]+\.[0-9]+\.[0-9]+-to-[0-9]+\.[0-9]+\.[0-9]+$' || echo "nomatch")
-          if [ "$branch_name" == "nomatch" ]; then
-            echo "This branch does not match the expected pattern. Skipping."
-            exit 0
-          fi
-
-          echo "branch_name=${branch_name}" >> "$GITHUB_OUTPUT"
-
-      - name: Extract version from branch name
-        id: extract_version
-        if: steps.verify_branch.outputs.branch_name
-        run: |
-          # Extract the version from the branch name
-          current_version=$(echo "${{ steps.verify_branch.outputs.branch_name }}" | sed -E 's/^workflow\/bump-version-from-[0-9]+\.[0-9]+\.[0-9]+-to-([0-9]+\.[0-9]+\.[0-9]+)$/\1/')
-          echo "current_version=${current_version}" >> "$GITHUB_OUTPUT"
-
-      - name: Configure Git
-        if: steps.verify_branch.outputs.branch_name
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Create and push Git tag
-        if: steps.verify_branch.outputs.branch_name
-        run: |
-          git tag "v${{ steps.extract_version.outputs.current_version }}" "${{ github.event.pull_request.merge_commit_sha }}"
-          git push origin "v${{ steps.extract_version.outputs.current_version }}"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: conjikidow/bump-version@v1.0.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          labels-to-add: "automated,versioning"
