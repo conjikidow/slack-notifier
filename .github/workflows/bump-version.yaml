@@ -12,7 +12,7 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: conjikidow/bump-version@v1.2.0
+      - uses: conjikidow/bump-version@3740833a6b629ed63272d8120cab6349ebf224a4 # v1.2.0
         with:
           label-major: "update::major"
           label-minor: "update::minor"
