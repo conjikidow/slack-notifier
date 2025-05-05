@@ -38,6 +38,7 @@ jobs:
             test:
               - tests/**
               - '!tests/**.md'
+              - .github/workflows/ci.yaml
             workflow:
               - .github/workflows/**
             python:
@@ -109,7 +110,7 @@ jobs:
   pytest:
     name: Run Pytest
     needs: determine-changes
-    if: ${{ needs.determine-changes.outputs.python == 'true' }}
+    if: ${{ needs.determine-changes.outputs.python == 'true' || needs.determine-changes.outputs.test == 'true' }}
     runs-on: ubuntu-latest
 
     steps:
