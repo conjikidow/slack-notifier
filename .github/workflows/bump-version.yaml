@@ -12,9 +12,10 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: conjikidow/bump-version@7e011db0332dab522c8284838913a8e7995ec7fa # v1.2.4
+      - uses: conjikidow/bump-version@95d3e3d4cce67d496cb1d29a62cea43329937449 # v1.3.1
         with:
           label-major: "update::major"
           label-minor: "update::minor"
           label-patch: "update::patch"
           labels-to-add: "automated,versioning"
+          create-release: 'true'
