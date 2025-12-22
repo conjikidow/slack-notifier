@@ -22,7 +22,7 @@ dev = [
     { include-group = "lint" },
     { include-group = "testing" },
 ]
-lint = [ "ruff==0.12.11" ]
+lint = [ "ruff==0.14.10" ]
 testing = [ "pytest==9.0.2", "pytest-cov==7.0.0" ]
 
 [tool.uv]
